@@ -2,7 +2,7 @@
 
 **Thank you for taking the time to review my portfolio. These projects showcase my analytical skills across Excel, SQL, and Power BI, demonstrating my ability to extract insights and drive data-driven decisions.**
 
-# EXCEL PROJECTS
+# EXCEL PROJECT
 
 ## Project 1
 
@@ -72,3 +72,224 @@ This project offers a comprehensive guide to advanced Excel techniques for data 
 
 **Dashboard Overview:** 
 ![Sales_Dashboard](Retail_Sales_Dashboard.JPG)
+
+
+# SQL PROJECT
+
+## Project 1
+
+**Project Overview**
+
+[reatail_sales_sql_dataset](https://github.com/Dennistheanalyst/dennistheanalyst.github.io/blob/main/Retail_sales_sql_Dataset.xlsx)
+
+**Title:** Optimizing Retail Sales Insights: A SQL Data Analysis Project
+
+This project showcases essential SQL skills and techniques commonly used by data analysts to explore, clean, and analyze retail sales data. It involves creating a retail sales database, conducting exploratory data analysis (EDA), and using SQL queries to answer key business questions. Designed for beginners in data analysis, this project helps build a strong foundation in SQL while providing hands-on experience with real-world data.
+
+## Project Objectives
+1. **Retail Sales Database Setup** – Create and populate a structured retail sales database using the provided dataset.
+2. **Data Cleaning** – Identify and handle missing or null values to ensure data accuracy and reliability.
+3. **Exploratory Data Analysis (EDA)** – Conduct basic analysis to understand key patterns, trends, and relationships within the dataset.
+4. **Business Insights & Analysis** – Utilize SQL queries to address specific business questions, extract meaningful insights, and support data-driven decision-making.
+
+## Project Structure:
+
+### 2. Data Exploration & Cleaning
+
+- **Record Count**: Determine the total number of records in the dataset.
+- **Customer Count**: Find out how many unique customers are in the dataset.
+- **Category Count**: Identify all unique product categories in the dataset.
+- **Null Value Check**: Check for any null values in the dataset and delete records with missing data.
+
+```sql
+SELECT *
+FROM [dbo].[Retail_sales]
+WHERE [transactions_id] IS NULL
+
+SELECT *
+FROM [dbo].[Retail_sales]
+WHERE [transactions_id] IS NULL
+OR
+[sale_date] IS NULL
+OR
+[sale_time] IS NULL
+OR
+[customer_id] IS NULL
+OR
+[gender] IS NULL
+OR
+[category] IS NULL
+OR
+[quantiy] IS NULL
+OR
+[price_per_unit] IS NULL
+OR
+[cogs] IS NULL
+OR
+[total_sale] IS NULL;
+
+DELETE FROM [dbo].[Retail_sales]
+WHERE [transactions_id] IS NULL
+OR
+[sale_date] IS NULL
+OR
+[sale_time] IS NULL
+OR
+[customer_id] IS NULL
+OR
+[gender] IS NULL
+OR
+[category] IS NULL
+OR
+[quantiy] IS NULL
+OR
+[price_per_unit] IS NULL
+OR
+[cogs] IS NULL
+OR
+[total_sale] IS NULL;
+
+SELECT *
+FROM [dbo].[Retail_sales]
+
+SELECT COUNT(*)
+FROM [dbo].[Retail_sales]
+```
+
+### DATA ANALYSIS AND FINDINGS:
+
+**SQL Code:** 
+1. **Write a SQL query to retrieve all columns for sales made on '2022-11-05**:
+
+```sql
+SELECT *
+FROM [dbo].[Retail_sales]
+WHERE  [sale_date] = '2022-11-05';
+```
+
+2. **Write a SQL query to retrieve all transactions where the category is 'Clothing' and the quantity sold is more than 4 in the month of Nov-2022**:
+
+```sql
+SELECT *
+FROM [dbo].[Retail_sales]
+WHERE [category] = 'Clothing'
+AND 
+[quantiy] >= 4
+AND
+YEAR([sale_date]) = '2022'
+AND 
+MONTH([sale_date]) = '11';
+```
+
+3. **Write a SQL query to calculate the total sales (total_sale) for each category.**:
+
+```sql
+SELECT [category], SUM([total_sale])
+FROM [dbo].[Retail_sales]
+GROUP BY [category]
+```
+
+4. **Write a SQL query to find the average age of customers who purchased items from the 'Beauty' category.**:
+
+```sql
+SELECT ROUND(AVG([age]),2) AS Avg_age
+FROM [dbo].[Retail_sales]
+WHERE [category] = 'Beauty';
+```
+
+5. **Write a SQL query to find all transactions where the total_sale is greater than 1000.**:
+
+```sql
+SELECT *
+FROM [dbo].[Retail_sales]
+WHERE [total_sale]>1000;
+```
+
+6. **Write a SQL query to find the total number of transactions (transaction_id) made by each gender in each category.**:
+
+```sql
+SELECT [gender],[category], COUNT([transactions_id]) AS [transactions_id]
+FROM [dbo].[Retail_sales]
+GROUP BY [gender],[category]
+ORDER BY [category]
+```
+
+7. **Write a SQL query to calculate the average sale for each month. Find out best selling month in each year**:
+
+```sql
+WITH monthlysales AS 
+(
+SELECT 
+		YEAR([sale_date]) AS Year,
+		MONTH([sale_date]) AS Month, 
+		AVG([total_sale]) AS avg_sales,
+		SUM([total_sale]) AS total_sales,
+		RANK() OVER(PARTITION BY YEAR([sale_date]) ORDER BY AVG([total_sale]) DESC) AS Rank
+		FROM [dbo].[Retail_sales]
+		GROUP BY YEAR([sale_date]),MONTH([sale_date])
+	)
+
+SELECT  Year,
+Month,
+avg_sales
+FROM monthlysales
+WHERE Rank = 1;
+```
+
+8. **Write a SQL query to find the top 5 customers based on the highest total sales **:
+
+```sql
+SELECT TOP 5 [customer_id], SUM([total_sale]) AS Total_sales
+	FROM [dbo].[Retail_sales]
+	GROUP BY [customer_id]
+	ORDER BY Total_sales DESC;
+```
+
+9. **Write a SQL query to find the number of unique customers who purchased items from each category.**:
+
+```sql
+SELECT  COUNT(DISTINCT [customer_id]) AS Customers, [category]
+FROM [dbo].[Retail_sales]
+GROUP BY [category];
+```
+
+10. **Write a SQL query to create each shift and number of orders (Example Morning <12, Afternoon Between 12 & 17, Evening >17)**:
+
+```sql
+WITH hourly_sales AS (
+SELECT *,
+CASE 
+	 WHEN DATEPART(HOUR, [sale_time]) <= 12 THEN 'Morning'
+	 WHEN DATEPART(HOUR, [sale_time]) BETWEEN 12 AND 17 THEN 'AFTERNOON'
+	 ELSE 'Evening' END AS Shift
+FROM [dbo].[Retail_sales]
+)
+SELECT 
+Shift,
+COUNT([transactions_id]) AS total_orders
+FROM hourly_sales
+GROUP BY Shift;
+```
+
+
+
+
+### 3. Findings
+
+- **Customer Demographics** – The dataset features customers from diverse age groups, with purchases spanning various categories like Clothing and Beauty.
+- **High-Value Transactions** – A significant number of transactions exceed $1,000, highlighting premium purchases.
+- **Sales Trends** – Monthly sales analysis reveals fluctuations in demand, helping pinpoint peak seasons.
+- **Customer Insights** – Identifies top-spending customers and the most popular product categories, providing valuable business intelligence.
+
+## Reports
+
+- **Sales Summary:** A detailed report summarizing total sales, customer demographics, and category performance.
+- **Trend Analysis:** Insights into sales trends across different months and shifts.
+- **Customer Insights:** Reports on top customers and unique customer counts per category.
+
+## Conclusion
+
+This project offers a thorough introduction to SQL for aspiring data analysts, covering key areas such as database setup, data cleaning, exploratory data analysis (EDA), and business-focused SQL queries. The insights gained from this project provide valuable information on sales trends, customer behavior, and product performance, which can support informed business decision-making.
+
+**Technology Used:** SQL server
+
