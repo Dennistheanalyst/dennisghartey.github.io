@@ -293,3 +293,86 @@ This project offers a thorough introduction to SQL for aspiring data analysts, c
 
 **Technology Used:** SQL server
 
+
+
+## Project 2
+
+[JOINS](https://github.com/Dennistheanalyst/dennistheanalyst.github.io/blob/main/JOINS.xlsx)
+
+**Title:** Interrogating data(JOINS)
+
+**Project Description:** This project analyzes company data to extract key information based on management's requests. It utilizes the JOIN statement to combine multiple tables to provide report for management based on companys request. 
+Additionally, clauses such as WHERE, BETWEEN, IN, and WHEN are used to filter the data that are specifically requested by the company.
+
+## Project Objectives
+
+- Extract specific customer and salesperson details based on location.
+- Retrieve information by joining multiple tables like salesman, customer, and orders.
+- Retrieve information by joining multiple tables (salesman, customer, orders)
+- Generate reports on orders, salespersons, and commissions.
+- Generate Cartesian products to analyze all possible salesperson-customer pairings.
+
+
+## Project Structure:
+
+###  Data Cleaning
+- Removing Null Vallues
+- Replacinin a null value with a figure(100)
+
+```sql
+SELECT *
+FROM [dbo].[Orders]
+WHERE [Order Number] IS NULL;
+
+DELETE [dbo].[Orders]
+WHERE [Order Number] IS NULL;
+
+UPDATE [dbo].[Customers]
+SET [Grade] = 100
+WHERE [Grade] IS NULL;
+```
+
+### DATA ANALYSIS:
+
+**SQL Code:** 
+
+- **write a SQL query to find those orders where the order amount exists between 500 and 2000. Return ord_no, purch_amt, cust_name, city.**
+```sql
+  SELECT O.[Order Number],O.[Purchase_Amount],C.[Customer_Name],[City]
+FROM [dbo].[Orders] O
+JOIN [dbo].[Customers] C
+	ON O.[Customer ID] = C.[Customer_ID]
+WHERE [Purchase_Amount] BETWEEN 500 AND 2000
+```
+- **Write a SQL statement to join the tables salesman, customer and orders so that the same column of each table appears once and only the relational rows are returned.** 
+```sql
+SELECT *
+FROM [dbo].[Salesmans] S
+JOIN [dbo].[Customers] C
+	ON S.[Salesman_id] = C.[Salesman_ID]
+JOIN [dbo].[Orders] O
+	ON O.[Salesman_id] = S.[Salesman_id]
+```
+- **Write a SQL statement to generate a report with the customer name, city, order no. order date, purchase amount for only those customers on the list who must have a grade and placed one or more orders or which order(s) have been placed by the customer who neither is on the list nor has a grade.**
+```sql
+SELECT C.[Customer_Name],C.[City],O.[Order Number],O.[Order Date],O.[Purchase_Amount]
+ FROM [dbo].[Customers] C
+ LEFT JOIN [dbo].[Orders] O
+	ON C.[Customer_ID] = O.[Customer ID]
+	WHERE ([Customer_ID] IS NOT NULL
+	AND [Grade] IS NOT NULL)
+	OR (C.[Customer_ID] IS NOT NULL
+	OR C.[Grade] IS NOT NULL)
+```
+- **Write a SQL statement to create a Cartesian product between salesperson and customer, i.e. each salesperson will appear for every customer and vice versa for those salesmen who belong to a city and customers who require a grade.**
+```sql
+SELECT *
+FROM [dbo].[Salesmans] S
+JOIN [dbo].[Customers] C
+ON S.[city] = C.[City]
+WHERE C.[Grade] IS NOT NULL;
+```
+
+## Conclusion 
+Based on managements request I was able to fetch these information for their consumption using JOINS.
+
